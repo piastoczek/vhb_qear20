@@ -24,9 +24,9 @@ library(tidyverse)
 
 
 # Load datasets
-orbis_raw <- read_csv("F:/empirical_accounting_vhb/vhb_qear20/raw_data/orbis_wrds_de.csv")
+orbis_data <- read_csv("F:/empirical_accounting_vhb/vhb_qear20/raw_data/orbis_wrds_de.csv")
 
-insolvency_filings <- read_csv("F:/empirical_accounting_vhb/vhb_qear20/raw_data/insolvency_filings_de_julaug2020_incomplete.csv")
+insolvency_data <- read_csv("F:/empirical_accounting_vhb/vhb_qear20/raw_data/insolvency_filings_de_julaug2020_incomplete.csv")
 
 
 
