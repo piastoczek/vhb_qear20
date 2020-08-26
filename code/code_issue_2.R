@@ -34,7 +34,7 @@ table(insolvency_data$insolvency_court)
 dplyr::count(insolvency_data, insolvency_court, sort = TRUE) #176 insolvency courts
 
 #Basic bar charts
-a <- ggplot(data = insolvency_filings) + geom_bar(mapping = aes(x = subject, fill = subject)) 
+a <- ggplot(data = insolvency_data) + geom_bar(mapping = aes(x = subject, fill = subject)) 
 a + theme(axis.text.x = element_blank())
 
 
