@@ -33,6 +33,12 @@ table(insolvency_data$subject) # 10 different factors
 table(insolvency_data$insolvency_court)
 dplyr::count(insolvency_data, insolvency_court, sort = TRUE) #176 insolvency courts
 
+#Frequency tables
+#install.packages("summarytools")
+library(summarytools)
+summarytools::freq(insolvency_data$insolvency_court, order = "freq")
+summarytools::freq(insolvency_data$subject, order = "freq"
+
 #Basic bar charts
 a <- ggplot(data = insolvency_data) + geom_bar(mapping = aes(x = subject, fill = subject)) 
 a + theme(axis.text.x = element_blank())
