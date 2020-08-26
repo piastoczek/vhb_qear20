@@ -11,7 +11,7 @@
 # setwd("F:/empirical_accounting_vhb/vhb_qear20")
 
 # Simone
-# setwd("C:/Users/Simone/git/vhb_qear20/raw_data")
+# setwd("C:/Users/Simone/git/vhb_qear20")
 
 # Olga
 #
@@ -24,8 +24,8 @@ library(tidyverse)
 
 
 # Load datasets
-orbis_data <- read_csv("F:/empirical_accounting_vhb/vhb_qear20/raw_data/orbis_wrds_de.csv")
-insolvency_data <- read_csv("F:/empirical_accounting_vhb/vhb_qear20/raw_data/insolvency_filings_de_julaug2020_incomplete.csv")
+orbis_data <- read_csv("raw_data/orbis_wrds_de.csv")
+insolvency_data <- read_csv("raw_data/insolvency_filings_de_julaug2020_incomplete.csv")
 
 #Overview
 table(insolvency_data$date) #data from 01/07/2020 to 18/08/2020
