@@ -37,7 +37,7 @@ dplyr::count(insolvency_data, insolvency_court, sort = TRUE) #176 insolvency cou
 #install.packages("summarytools")
 library(summarytools)
 summarytools::freq(insolvency_data$insolvency_court, order = "freq")
-summarytools::freq(insolvency_data$subject, order = "freq"
+summarytools::freq(insolvency_data$subject, order = "freq")
 
 #Basic bar charts
 a <- ggplot(data = insolvency_data) + geom_bar(mapping = aes(x = subject, fill = subject)) 
