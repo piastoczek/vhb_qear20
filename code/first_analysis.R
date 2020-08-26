@@ -19,7 +19,8 @@ str(insolvency_data)
 #  - court_file_numer: ok
 #  - subject: need to be factor
 #  - name-debtor: 
-#  - domicile_debtor: sometimes you have Zip-codes and sometimes not 
+#  - domicile_debtor: sometimes you have Zip-codes and sometimes not
+# change
 
 # first observations:
 #  - one court_file_number can have multiple subjects at the same date
