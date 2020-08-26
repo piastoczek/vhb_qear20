@@ -5,7 +5,7 @@
 library(tidyverse)
 
 ## load insolvency dataset
-setwd("C:/Users/Simone/git/vhb_qear20/raw_data")
+#setwd("C:/Users/Simone/git/vhb_qear20/raw_data")
 
 insolvency_data <- read.csv("insolvency_filings_de_julaug2020_incomplete.csv", header = TRUE, sep = ",")
 str(insolvency_data)
