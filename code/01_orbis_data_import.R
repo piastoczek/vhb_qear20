@@ -44,7 +44,12 @@ dplyr::count(insolvency_data, insolvency_court, sort = TRUE) #176 insolvency cou
 a <- ggplot(data = insolvency_data) + geom_bar(mapping = aes(x = subject, fill = subject)) 
 a + theme(axis.text.x = element_blank())
 
-#
+# or with export to the "output" folder in pdf format
+pdf("output/insolvency_subject_barchart.pdf")
+ggplot(insolvency_data) + geom_bar(mapping = aes(x = subject)) + coord_flip()
+dev.off()
+
+# I've got problems with the code from this point. It doesn't work at my PC. Tim & Simone - how about you?
 ggplot(data = insolvency_data, mapping = aes(x = date))+
   geom_freqpoly(mapping = aes(color = subject), binwidth = 500)
 
