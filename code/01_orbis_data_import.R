@@ -49,25 +49,41 @@ pdf("output/insolvency_subject_barchart.pdf")
 ggplot(insolvency_data) + geom_bar(mapping = aes(x = subject)) + coord_flip()
 dev.off()
 
-# I've got problems with the code from this point. It doesn't work at my PC. Tim & Simone - how about you?
+#Basic bar chart seperated by periods (Tim)
+
+Jul.1 <- filter(select(insolvency_data, date:subject), date >= "2020-07-01" & date < "2020-07-15")
+Jul.1$Month <- "(A) July, First Half " 
+Jul.2 <- filter(select(insolvency_data, date:subject), date >= "2020-07-15" & date < "2020-08-01")
+Jul.2$Month <- "(B) July, Second Half" 
+Aug.1 <- filter(select(insolvency_data, date:subject), date >= "2020-08-01" & date < "2020-08-15")
+Aug.1$Month <- "(C) August, First Half" 
+Aug.2 <- filter(select(insolvency_data, date:subject), date >= "2020-08-15" & date < "2020-09-01")
+Aug.2$Month <- "(D) August, Second Half" 
+insolvency_datam <- rbind(Jul.1,Jul.2,Aug.1,Aug.2)
+
+b <- ggplot(data=insolvency_datam, aes(x=subject, fill= subject)) + geom_bar(col=289)+ facet_grid(~Month)
+b + labs(title="Status by Period", x = "Status" , y= "Number", fill="Status")+ theme(axis.text.x = element_blank()) -> g
+b + theme(plot.title = element_text(hjust = 0.5, face ="bold", colour = "black"))
+
+# I've got problems with the code from this point. It doesn't work at my PC. Tim & Simone - how about you? 
 ggplot(data = insolvency_data, mapping = aes(x = date))+
   geom_freqpoly(mapping = aes(color = subject), binwidth = 500)
 
-b <- ggplot(data = insolvency_filings, aes(x=factor(date),y=subject, group=subject))+
+c <- ggplot(data = insolvency_filings, aes(x=factor(date),y=subject, group=subject))+
   stat_summary(aes(color=subject), fun.y = length, geom = "line")+
   scale_color_discrete("subject")+
   labs(x="",y="Frequency")
-b + theme(axis.text.y = element_blank())
+c + theme(axis.text.y = element_blank())
 
 
-c <- ggplot(insolvency_data, aes(x=date, y=subject)) +
+d <- ggplot(insolvency_data, aes(x=date, y=subject)) +
   geom_line() + 
   xlab("")
-c
-c+scale_x_date(date_labels = "%b")
-c+scale_x_date(date_labels = "%Y %b %d")
-c+scale_x_date(date_labels = "%W")
-c+scale_x_date(date_labels = "%m-%Y")
+d
+d+scale_x_date(date_labels = "%b")
+d+scale_x_date(date_labels = "%Y %b %d")
+d+scale_x_date(date_labels = "%W")
+d+scale_x_date(date_labels = "%m-%Y")
 
 attach(insolvency_data)
 table_a <- table(insolvency_court, subject)
