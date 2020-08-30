@@ -46,8 +46,12 @@ a + theme(axis.text.x = element_blank())
 
 # or with export to the "output" folder in pdf format
 pdf("output/insolvency_subject_barchart.pdf")
-ggplot(insolvency_data) + geom_bar(mapping = aes(x = subject)) + coord_flip()
+insolvency_by_subject <- insolvency_data %>% group_by(subject) %>% count() %>% arrange(desc(n))
+ggplot(data = insolvency_by_subject) + 
+  geom_col(mapping = aes(x = n, y = reorder(subject, n))) + 
+  labs(title = "Insolvency by subject", x = "No. of cases", y = "Subject")
 dev.off()
+
 
 #Basic bar chart seperated by periods (Tim)
 
