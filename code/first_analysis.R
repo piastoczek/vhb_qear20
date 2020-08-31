@@ -20,7 +20,6 @@ str(insolvency_data)
 #  - subject: need to be factor
 #  - name-debtor: 
 #  - domicile_debtor: sometimes you have Zip-codes and sometimes not
-# change
 
 # first observations:
 #  - one court_file_number can have multiple subjects at the same date
@@ -35,6 +34,35 @@ table(insolvency_data$subject) # 10 different factors
 table(insolvency_data$insolvency_court)
 dplyr::count(insolvency_data, insolvency_court, sort = TRUE) #176 insolvency courts
 
+###Eröffnung
+###Sicherheitsmaßnahme
+###Abweisungs mangels Masse
+###Termine
+###Verteilungsverzeichnisse
+#Überwachte Insolvenzpläne
+###Entscheidung im Verfahren
+#Entscheidung nach Aufhebung des Verfahrens
+#Entscheidung im Restschulbefreiungsverfahren
+#Sonstiges
+
+#Registerzeichen: IN, IK, IE
+
+table(insolvency_data$insolvency_court)
+dplyr::count(insolvency_data, insolvency_court, sort = TRUE) #176 insolvency courts
+
+## Data cleaning
+
+insolvency_data_cleaning <- function(data){
+  data$date <- as.Date(data$date)
+  data$insolvency_court <- as.factor(data$insolvency_court)
+  data$subject <- as.factor(data$subject)
+  return(data)
+}
+
+insolveny_data_clean <- insolvency_data_cleaning(insolvency_data)
+str(insolveny_data_clean)
+
+table(insolveny_data_clean$insolvency_court)
 
 # load orbis dataset
 orbis_data <- read.csv("orbis_wrds_de.csv", header = TRUE, sep = ",")
