@@ -21,11 +21,6 @@ library(maps)
 orbis_data <- read_csv("raw_data/orbis_wrds_de.csv")
 
 insolvency_data <- read_csv("raw_data/insolvency_filings_de_julaug2020_incomplete.csv")
-insolvency_data %<>%
-  mutate(date= as.Date(date, format= "%d.%m.%Y"))
-
-#makeCodebook(insolvency_filings, TRUE)
-#codebook(insolvency_filings)
 
 #Check variable format
 for(i in orbis_data){
@@ -40,12 +35,12 @@ table(insolvency_data$subject) # 10 different factors
 table(insolvency_data$insolvency_court)
 dplyr::count(insolvency_data, insolvency_court, sort = TRUE) #176 insolvency courts
 
-
-
 #Basic bar charts
-a <- ggplot(insolvency_data) + geom_bar(mapping = aes(x = subject)) + coord_flip()
-a + theme(axis.text.x = element_blank())
-a 
+pdf("output/insolvency_subject_barchart2.pdf")
+insolvency_subject_bar <- ggplot(insolvency_data) + geom_bar(mapping = aes(x = subject)) + coord_flip()
+insolvency_subject_bar + theme(axis.text.x = element_blank())
+print(insolvency_subject_bar)
+dev.off()
 
 # or with export to the "output" folder in pdf format
 pdf("output/insolvency_subject_barchart.pdf")
