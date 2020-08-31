@@ -21,15 +21,17 @@ library(maps)
 orbis_data <- read_csv("raw_data/orbis_wrds_de.csv")
 
 insolvency_data <- read_csv("raw_data/insolvency_filings_de_julaug2020_incomplete.csv")
+insolvency_data %<>%
+  mutate(date= as.Date(date, format= "%d.%m.%Y"))
 
 #makeCodebook(insolvency_filings, TRUE)
 #codebook(insolvency_filings)
 
 #Check variable format
-for(i in orbis_raw){
+for(i in orbis_data){
   print(typeof(i))     #prints 'character'
 }
-for(i in insolvency_filings){
+for(i in insolvency_data){
   print(typeof(i))     #prints 'character'
 }
 
@@ -41,8 +43,9 @@ dplyr::count(insolvency_data, insolvency_court, sort = TRUE) #176 insolvency cou
 
 
 #Basic bar charts
-a <- ggplot(data = insolvency_data) + geom_bar(mapping = aes(x = subject, fill = subject)) 
+a <- ggplot(insolvency_data) + geom_bar(mapping = aes(x = subject)) + coord_flip()
 a + theme(axis.text.x = element_blank())
+a 
 
 # or with export to the "output" folder in pdf format
 pdf("output/insolvency_subject_barchart.pdf")
@@ -60,10 +63,43 @@ Aug.1$Month <- "(C) August, First Half"
 Aug.2 <- filter(select(insolvency_data, date:subject), date >= "2020-08-15" & date < "2020-09-01")
 Aug.2$Month <- "(D) August, Second Half" 
 insolvency_datam <- rbind(Jul.1,Jul.2,Aug.1,Aug.2)
+b
 
-b <- ggplot(data=insolvency_datam, aes(x=subject, fill= subject)) + geom_bar(col=289)+ facet_grid(~Month)
-b + labs(title="Status by Period", x = "Status" , y= "Number", fill="Status")+ theme(axis.text.x = element_blank()) -> g
-b + theme(plot.title = element_text(hjust = 0.5, face ="bold", colour = "black"))
+insolvency_data$date = as.Date(insolvency_data$date, format = "%Y/%m/%d")
+w = table(insolvency_data$subject, insolvency_data$date)
+t = as.data.frame(w, as.Date(date, format = "%Y/%m/%d"))
+names(t)[1] = 'subject'
+names(t)[2] = 'date'
+
+d1 <- ggplot(t, aes(x=date, y=Freq, group = subject['Termine'], color = subject)) + geom_line() + 
+  geom_point( size=1, shape=21, fill="white") +
+  theme(axis.text.x=element_blank()) + 
+  labs (x="Date", y=expression(paste("Frequency of subjects")), title="Insolvency filings by subject over time")
+
+d2 <- ggplot(data= t, aes(x=date, y=Freq,group=subject))+ geom_area(position='identity', aes(fill= subject), alpha=0.2)+
+  theme(axis.text.x=element_text(angle=90, size=10, vjust=0.5))
+
+
+  scale_x_date(date_breaks= "1 month", date_minor_breaks = "15 days", date_labels = "%b"+ geom_line(aes(color = subject))
+
+
+d <- ggplot(t, aes(x=date, y=Freq, group = subject, color = subject)) + geom_line() + 
+  geom_point( size=1, shape=21, fill="white") +
+  theme(axis.text.x=element_text(angle=90, size=10, vjust=0.5)) + 
+  labs (x="Date", y=expression(paste("Frequency of subjects")), title="Insolvency filings by subject over time")
+d
+
+
+
+
+
+library(tidyverse)
+g <- insolvency_data
+g + arrange(subject, date)
+group_by(subject)
+  
+
+
 
 # I've got problems with the code from this point. It doesn't work at my PC. Tim & Simone - how about you? 
 ggplot(data = insolvency_data, mapping = aes(x = date))+
@@ -85,10 +121,6 @@ d+scale_x_date(date_labels = "%Y %b %d")
 d+scale_x_date(date_labels = "%W")
 d+scale_x_date(date_labels = "%m-%Y")
 
-attach(insolvency_data)
-table_a <- table(insolvency_court, subject)
-ftable(table_a)
-prop.table(table_a)
 
 #install.packages("summarytools")
 library(summarytools)
