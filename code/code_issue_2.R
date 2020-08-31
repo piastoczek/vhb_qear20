@@ -5,19 +5,11 @@
 # Issue 2 - Solutions
 # ------------------------------------------------------------------------------
 
-# Set working directories
-
-# Pia 
-# setwd("F:/empirical_accounting_vhb/vhb_qear20")
-
-# Simone
-# setwd("C:/Users/Simone/git/vhb_qear20")
-
-# Olga
-#
- 
-# Tim
-#
+# Set working directory
+# Enter your path in the first line and your windows user name in line 2 (replace your name) then the path will be set automatically based on the user
+Paths = c("F:/empirical_accounting_vhb/vhb_qear20", "C:/Users/Simone/git/vhb_qear20", "C://Tim/other/path", "C://Olga/other/path")
+names(Paths) = c("pstoczek", "Simone", "Tim", "Olga")
+setwd(Paths[Sys.info()[7]])
 
 # Packages if not installed
 #install.packages("summarytools")
