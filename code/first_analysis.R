@@ -5,7 +5,7 @@
 library(tidyverse)
 
 ## load insolvency dataset
-#setwd("C:/Users/Simone/git/vhb_qear20/raw_data")
+#setwd("C:/Users/Simone/Documents/GitHub/vhb_qear20")
 
 insolvency_data <- read.csv("insolvency_filings_de_julaug2020_incomplete.csv", header = TRUE, sep = ",")
 str(insolvency_data)
@@ -59,12 +59,50 @@ insolvency_data_cleaning <- function(data){
   return(data)
 }
 
+#clean data set
 insolveny_data_clean <- insolvency_data_cleaning(insolvency_data)
 str(insolveny_data_clean)
 
-table(insolveny_data_clean$insolvency_court)
+#understand court structure
+court <- insolveny_data_clean  %>%
+  group_by(insolvency_court)%>%
+  count()
 
-# load orbis dataset
+#add map data
+library("sf")
+bundesländer <- readRDS("raw_data/gadm36_DEU_1_sf.rds")
+districts <- readRDS("raw_data/gadm36_DEU_2_sf.rds")
+municipality <- readRDS("raw_data/gadm36_DEU_3_sf.rds")
+maps <- readRDS("raw_data/gadm36_DEU_4_sf.rds")
+
+#combine insolvency dataset and map data
+join <- left_join(insolvency_data, municipality, by = c("insolvency_court" = "NAME_3")) %>%
+  select(-GID_0,-GID_1,-NL_NAME_1, -GID_2, -NL_NAME_2, -GID_3, -VARNAME_3, -NL_NAME_3, -HASC_3)
+str(join)
+
+#understand structural differences
+join$dummy <- ifelse(is.na(join$NAME_0),1,0)
+na_join <- subset(join, join$dummy == 1)
+table(na_join$insolvency_court)# get those insolvency_courts which do not match
+
+c("Bad Homburg v.d.Höhe", 
+  "Bad Kreuznach", 
+  "Charlottenburg", 
+  "Esslingen", 
+  "Frankfurt/Oder", 
+  "Freiburg", 
+  "Kempten",
+  "Königstein/Ts.",
+  "Leer",
+  "Limburg",
+  "Ludwigshafen/Reihn",
+  "Marburg/Lahn",
+  "Meldorf",
+  "Mühldorf",
+  "Neustadt a. d. ")
+
+
+?# load orbis dataset
 orbis_data <- read.csv("orbis_wrds_de.csv", header = TRUE, sep = ",")
 str(orbis_data)
 # 43 variables
