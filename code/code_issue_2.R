@@ -7,8 +7,8 @@
 
 # Set working directory
 # Enter your path in the first line and your windows user name in line 2 (replace your name) then the path will be set automatically based on the user
-Paths = c("F:/empirical_accounting_vhb/vhb_qear20", "C:/Users/Simone/Documents/GitHub/vhb_qear20", "C://Tim/other/path", "C://Olga/other/path")
-names(Paths) = c("pstoczek", "Simone", "Tim", "Olga")
+Paths = c("F:/empirical_accounting_vhb/vhb_qear20", "C:/Users/Simone/Documents/GitHub/vhb_qear20", ""C:/Users/tschw/OneDrive/Dokumente/GitHub/vhb_qear20"", "C://Olga/other/path")
+names(Paths) = c("pstoczek", "Simone", "tschw", "Olga")
 setwd(Paths[Sys.info()[7]])
 
 # Packages if not installed
@@ -59,6 +59,39 @@ ggplot(data = insolvency_subject_bar3) +
   labs(title = "Insolvency by subject", x = "No. of cases", y = "Subject")
 print(insolvency_subject_bar3)
 dev.off()
+
+# Bar chart 4
+# Basic bar chart that shows absolute number of cases by court
+
+
+f <- ggplot(data=insolvency_data, aes(x=insolvency_court, fill =subject)) +geom_bar(col=289)
+f + labs(title="Cases And Status Of Each Court", x = "Courts" , y= "Number", fill="Status") + theme(axis.text.x = element_blank()) -> f
+f + theme(plot.title = element_text(hjust = 0.5, face ="bold", colour = "black"))
+
+# Bar chart 5
+# Basic bar chart that shows development of insolvency subjects over time (TS) 
+
+Jul.1 <- filter(select(insolvency_data, date:subject), date >= "2020-07-01" & date < "2020-07-15")
+Jul.1$Month <- "(A) July, First Half " 
+Jul.2 <- filter(select(insolvency_data, date:subject), date >= "2020-07-15" & date < "2020-08-01")
+Jul.2$Month <- "(B) July, Second Half" 
+Aug.1 <- filter(select(insolvency_data, date:subject), date >= "2020-08-01" & date < "2020-08-15")
+Aug.1$Month <- "(C) August, First Half" 
+Aug.2 <- filter(select(insolvency_data, date:subject), date >= "2020-08-15" & date < "2020-09-01")
+Aug.2$Month <- "(D) August, Second Half" 
+insolvency_datam <- rbind(Jul.1,Jul.2,Aug.1,Aug.2)
+
+g <- ggplot(data=insolvency_datam, aes(x=subject, fill= subject)) + geom_bar(col=289)+ facet_grid(~Month)
+g + labs(title="Status by Period", x = "Status" , y= "Number", fill="Status")+ theme(axis.text.x = element_blank()) -> g
+g + theme(plot.title = element_text(hjust = 0.5, face ="bold", colour = "black"))
+
+
+
+
+
+
+
+
 
 
 
