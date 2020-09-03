@@ -64,7 +64,7 @@ joined_insolvency_data <- left_join(insolvency_data, map_municipality_clean, by 
          federal_state = NAME_1,
          district = NAME_2) %>%
   distinct()
-#Remark: by executing the left_join, we also remove duplicates from insolvency_data 
+#Remark: by executing the left_join, we also remove duplicates
 #See duplicated.R for further information on duplicate analysis
 
 #Clean insolvency dataset
