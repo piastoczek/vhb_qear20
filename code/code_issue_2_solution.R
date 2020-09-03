@@ -2,7 +2,7 @@
 # VHB Course - Group 5
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-# Issue 2 - Solutions (New Version)
+# Issue 2 - Solutions
 # ------------------------------------------------------------------------------
 
 ### Data preparation ###
@@ -62,9 +62,10 @@ joined_insolvency_data <- left_join(insolvency_data, map_municipality_clean, by 
   select(date, insolvency_court, court_file_number, subject, name_debtor, domicile_debtor, NAME_0, NAME_1, NAME_2) %>%
   rename(country = NAME_0,
          federal_state = NAME_1,
-         district = NAME_2)
-#Remark: by executing the left_join the number of observations amounts from 10.035 to 10.283 which indicates that there might be a problem.
-#At the moment, I do not know where the problem comes from. Therefore, it should be kept in mind and be subject of further investigations.
+         district = NAME_2) %>%
+  distinct()
+#Remark: by executing the left_join, we also remove duplicates from insolvency_data 
+#See duplicated.R for further information on duplicate analysis
 
 #Clean insolvency dataset
 format_variables <- function(data){
@@ -94,7 +95,7 @@ str(joined_insolvency_data_clean)
 
 ## Descriptive analysis ###
 
-#Frequency tables
+## Frequency tables ## 
 #Table 1: Frequencies of insolvency filings per insolvency court
 table_1 <- summarytools::freq(joined_insolvency_data_clean$insolvency_court, order = "freq", report.nas = FALSE)
 view(table_1)
@@ -111,7 +112,7 @@ view(table_3)
 table_4 <- summarytools::ctable(x = joined_insolvency_data_clean$subject, y = joined_insolvency_data_clean$federal_state, prop = "r")
 view(table_4)
 
-#Basic Bar Charts
+## Basic Bar Charts ##
 #Bar chart 1: shows the insolvency filings per subject
 bar_chart_1 <- ggplot(data = joined_insolvency_data_clean) + 
   geom_bar(mapping = aes(x = subject, fill = subject))+
@@ -125,19 +126,19 @@ bar_chart_2  <- joined_insolvency_data_clean %>%
   arrange(desc(n)) %>%
   ggplot(aes(x = n, y = reorder(subject, n))) + 
   geom_col() + 
-  labs(title = "Insolvency filings by subject", x = "No. of filings", y = "Subject")+
+  labs(title = "Insolvency filings by subject", x = "Number", y = "Subject")+
   theme()
 print(bar_chart_2)
 
-# Bar chart 3: shows absolute number of cases by court
+#Bar chart 3: shows absolute number of cases by court
 bar_chart_3 <- ggplot(data = joined_insolvency_data_clean, aes(x = insolvency_court, fill = subject)) +
-  geom_bar(col=289)+
-  labs(title = "Cases And Status Of Each Court", x = "Courts" , y = "Number", fill = "Status") +
+  geom_bar(col = 289)+
+  labs(title = "Cases and status of each court", x = "Courts" , y = "Number", fill = "Status") +
   theme(axis.text.x = element_blank()) +
   theme(plot.title = element_text(hjust = 0.5, face = "bold", colour = "black"))
 print(bar_chart_3)
 
-# Bar chart 4: shows development of insolvency subjects over time (TS) 
+#Bar chart 4: shows development of insolvency subjects over time (TS) 
 Jul.1 <- filter(select(joined_insolvency_data_clean, date:subject), date >= "2020-07-01" & date < "2020-07-15")
 Jul.1$Month <- "(A) July, First Half " 
 Jul.2 <- filter(select(joined_insolvency_data_clean, date:subject), date >= "2020-07-15" & date < "2020-08-01")
@@ -148,26 +149,28 @@ Aug.2 <- filter(select(joined_insolvency_data_clean, date:subject), date >= "202
 Aug.2$Month <- "(D) August, Second Half" 
 insolvency_datam <- rbind(Jul.1,Jul.2,Aug.1,Aug.2)
 
-blob:https://web.whatsapp.com/f8d123f7-d3de-45c2-bc5b-4b6f3aaec3ccggplot(data = insolvency_datam, aes(x = subject, fill = subject)) + 
+insolvency_datam %>%
+  ggplot(aes(x = subject, fill = subject)) + 
   geom_bar(col = 289) +
   facet_grid( ~ Month) +
   labs(title = "Status by Period", x = "Status" , y = "Number", fill = "Status") +
   theme(axis.text.x = element_blank()) +
   theme(plot.title = element_text(hjust = 0.5, face ="bold", colour = "black"))
 
-# Bar chart 5: shows the relative frequencies of insolvency subjects by state
+#Bar chart 5: shows the relative frequencies of insolvency subjects by state
 joined_insolvency_data_clean %>%
   group_by(federal_state, subject)%>%
   tally() %>%
   ungroup() %>%
   ggplot(aes(x = n, y = federal_state, fill = subject))+
   geom_bar(position="fill", stat="identity")+
-  xlab("Number of insolvency subjects")+
+  xlab("Relative share of insolvency filing subjects")+
   ylab("")+
-  labs(title="Frequency of insolvency subjects by state.")+
+  labs(title="Relative Share of insolvency filing subjects by state.")+
   theme(legend.title = element_blank())
 
-# Interactive Map: shows the insolvency filing for each insolvency_court
+## Interactive Map ##
+# Map: shows the insolvency filing for each insolvency_court
 # possibility to filter for specific subjects
 count_insolvency <- joined_insolvency_data_clean  %>%
   #filter(subject == "Eröffnungen")%>%
@@ -175,11 +178,11 @@ count_insolvency <- joined_insolvency_data_clean  %>%
   count()
 
 #join datasets
-#map <- left_join(map_municipality_clean, count_insolvency, by = c("NAME_3" = "insolvency_court")) %>%
-#  select(NAME_3, n, geometry)
-
 map <- left_join(count_insolvency, map_municipality_clean, by = c("insolvency_court" = "NAME_3" )) %>%
   select(insolvency_court, n, geometry)
+
+#map <- left_join(map_municipality_clean, count_insolvency, by = c("NAME_3" = "insolvency_court")) %>%
+#  select(NAME_3, n, geometry)
 
 #transform map
 object <- st_as_sf(map)
