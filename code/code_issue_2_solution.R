@@ -164,9 +164,9 @@ joined_insolvency_data_clean %>%
   ungroup() %>%
   ggplot(aes(x = n, y = federal_state, fill = subject))+
   geom_bar(position="fill", stat="identity")+
-  xlab("Relative share of insolvency filing subjects")+
+  xlab("Relative share of insolvency subjects")+
   ylab("")+
-  labs(title="Relative Share of insolvency filing subjects by state.")+
+  labs(title="Relative Share of insolvency subjects by state.")+
   theme(legend.title = element_blank())
 
 ## Interactive Map ##
