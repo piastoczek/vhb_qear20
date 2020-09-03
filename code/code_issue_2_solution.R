@@ -75,11 +75,11 @@ format_variables <- function(data){
   data$insolvency_court <- as.factor(data$insolvency_court)
   #transform subject to factor variable
   data$subject <- as.factor(data$subject)
-  #transform country
+  #transform country to factor variable
   data$country <- as.factor(data$country)
-  #transform federal state
+  #transform federal state to factor variable
   data$federal_state <- as.factor(data$federal_state)
-  #transform country
+  #transform district to factor variable
   data$district <- as.factor(data$district)
   #remove digits from domicile_debtor as it inconsistent
   data$domicile_debtor_clean <- as.factor(gsub('[0-9]+', '', data$domicile_debtor))
