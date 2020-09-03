@@ -55,24 +55,24 @@ table(na_insolvency_per_municipality$insolvency_court)# get those insolvency_cou
 #create function to include the ones that have not been found
 prepare_join <- function(map){
   map$NAME_3[map$NAME_3 == c("Bad Kreuznach(Verbandsgemeinde)","Bad Kreuznach(Verbandsfreie Gemeinde)")] <- "Bad Kreuznach"
-  map$NAME_3[map$NAME_3 == c("Bad Homburg v.d. Höhe")] <- "Bad Homburg v.d.Höhe"
+  map$NAME_3[map$NAME_3 == c("Bad Homburg v.d. HÃ¶he")] <- "Bad Homburg v.d.HÃ¶he"
   map$NAME_3[map$NAME_3 == c("Berlin")] <- "Charlottenburg"
   map$NAME_3[map$NAME_3 == c("Esslingen am Neckar")] <- "Esslingen"
   map$NAME_3[map$NAME_3 == c("Frankfurt (Oder)")] <- "Frankfurt/Oder"
   map$NAME_3[map$NAME_3 == c("Freiburg im Breisgau")] <- "Freiburg"
-  map$NAME_3[map$NAME_3 == c("Kempten (Allgäu)")] <- "Kempten"
-  map$NAME_3[map$NAME_3 == c("Königstein im Taunus")] <- "Königstein/Ts."
+  map$NAME_3[map$NAME_3 == c("Kempten (AllgÃ¤u)")] <- "Kempten"
+  map$NAME_3[map$NAME_3 == c("KÃ¶nigstein im Taunus")] <- "KÃ¶nigstein/Ts."
   map$NAME_3[map$NAME_3 == c("Leer (Ostfriesland)")] <- "Leer"
   map$NAME_3[map$NAME_3 == c("Limburg a.d. Lahn")] <- "Limburg"
   map$NAME_3[map$NAME_3 == c("Ludwigshafen am Rhein")] <- "Ludwigshafen/Rhein"
   map$NAME_3[map$NAME_3 == c("Marburg")] <- "Marburg/Lahn"
-  map$NAME_3[map$NAME_3 == c("Mühldorf a. Inn")] <- "Mühldorf"
-  map$NAME_3[map$NAME_3 == c("Neustadt an der Weinstraße")] <- "Neustadt a. d. Wstr."
+  map$NAME_3[map$NAME_3 == c("MÃ¼hldorf a. Inn")] <- "MÃ¼hldorf"
+  map$NAME_3[map$NAME_3 == c("Neustadt an der WeinstraÃŸe")] <- "Neustadt a. d. Wstr."
   map$NAME_3[map$NAME_3 == c("Weiden i.d. OPf.")] <- "Weiden"
   map$NAME_3[map$NAME_3 == c("Weilheim i. OB")] <- "Weilheim"
   
   # no assignment possible 
-  #map$NAME_3[map$NAME_3 == c("")] <- "Niebüll"
+  #map$NAME_3[map$NAME_3 == c("")] <- "NiebÃ¼ll"
   #map$NAME_3[map$NAME_3 == c("")] <- "Meldorf"
   #map$NAME_3[map$NAME_3 == c("")] <- "Ravensburg"
   
@@ -94,8 +94,9 @@ count_insolvency <- insolvency_data %>%
    group_by(insolvency_court)%>%
    count()
 
-#join datasets
-map <- left_join(clean_municipality, count_insolvency, by = c("NAME_3" = "insolvency_court")) %>%
+#join datasets ( 
+map <- left_join(clean_municipality, count_insolvency, by = c("NAME_3" = "insolvency_court")) %>% 
+# Shouldn't it be "clean_map_municipality" (83) inestad of "clean_municipality"?
   select(NAME_3, n, geometry)
 
 #transform map
