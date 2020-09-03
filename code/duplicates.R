@@ -15,4 +15,16 @@ insolvency_data_raw <- insolvency_data # it will contain raw data with duplicate
 insolvency_data <- distinct(insolvency_data) # it will contain only distinct rows (9355 = 10035 - 680, that's ok). We need these clean data to be named "insolvency_data", because our previous code for plots and map uses this name.
 
 # check once again
-insolvency_data_raw %>% group_by(date, insolvency_court, court_file_number, subject, name_debtor, domicile_debtor) %>% count() # when we group by all columns, we get 9355 different groups
+insolvency_data_raw %>% 
+  group_by(date, insolvency_court, court_file_number, subject, name_debtor, domicile_debtor) %>% 
+  count() # when we group by all columns, we get 9355 different groups
+
+# which rows are duplicated?
+which_rows_duplicated <- insolvency_data_raw %>% 
+  group_by(date, insolvency_court, court_file_number, subject, name_debtor, domicile_debtor) %>% 
+  count() %>%
+  filter(n>1) %>%
+  arrange(desc(n))
+
+#how many duplicates?
+sum(which_rows_duplicated$n-1) # sum(n) would count "original" + duplicates. We need to sum (n-1)
