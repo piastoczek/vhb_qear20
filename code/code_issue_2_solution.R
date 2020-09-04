@@ -28,8 +28,8 @@ insolvency_data <- read.csv("raw_data/insolvency_filings_de_julaug2020_incomplet
 
 #Load map dataset with geographical data from Germany
 #For downloading the map data, I went to https://gadm.org/download_country_v3.html, searched for "Germany", and saved sf-files in raw_data
-map_federal_states <- readRDS("raw_data/gadm36_DEU_1_sf.rds")
-map_districts <- readRDS("raw_data/gadm36_DEU_2_sf.rds")
+#map_federal_states <- readRDS("raw_data/gadm36_DEU_1_sf.rds")
+#map_districts <- readRDS("raw_data/gadm36_DEU_2_sf.rds")
 map_municipality <- readRDS("raw_data/gadm36_DEU_3_sf.rds")
 
 #combine insolvency dataset and map data on municipality level
@@ -119,7 +119,7 @@ print(table_3)
 
 #Table 4: Cross-tabulation for pairs of subject and federal states 
 table_4 <- summarytools::ctable(x = joined_insolvency_data_clean$subject, y = joined_insolvency_data_clean$federal_state, prop = "r")
-View(table_4)
+print(table_4)
 
 ## Basic Bar Charts ##
 #Bar chart 1: shows the insolvency filings per subject
