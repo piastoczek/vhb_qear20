@@ -32,6 +32,15 @@ map_federal_states <- readRDS("raw_data/gadm36_DEU_1_sf.rds")
 map_districts <- readRDS("raw_data/gadm36_DEU_2_sf.rds")
 map_municipality <- readRDS("raw_data/gadm36_DEU_3_sf.rds")
 
+#combine insolvency dataset and map data on municipality level
+insolvency_per_municipality <- left_join(insolvency_data, map_municipality, by = c("insolvency_court" = "NAME_3")) %>%
+  select(insolvency_court, NAME_0, NAME_1, NAME_2)
+
+#understand structural differences
+insolvency_per_municipality$dummy <- ifelse(is.na(insolvency_per_municipality$NAME_0),1,0)
+na_insolvency_per_municipality <- subset(insolvency_per_municipality, insolvency_per_municipality$dummy == 1)
+table(na_insolvency_per_municipality$insolvency_court)# get those insolvency_courts which do not match
+
 prepare_join <- function(map){
   map$NAME_3[map$NAME_3 == c("Bad Kreuznach(Verbandsgemeinde)","Bad Kreuznach(Verbandsfreie Gemeinde)")] <- "Bad Kreuznach"
   map$NAME_3[map$NAME_3 == c("Bad Homburg v.d. Höhe")] <- "Bad Homburg v.d.Höhe"
@@ -98,19 +107,19 @@ str(joined_insolvency_data_clean)
 ## Frequency tables ## 
 #Table 1: Frequencies of insolvency filings per insolvency court
 table_1 <- summarytools::freq(joined_insolvency_data_clean$insolvency_court, order = "freq", report.nas = FALSE)
-view(table_1)
+print(table_1)
 
 #Table 2: Frequencies of insolvency filings per federal state
 table_2 <- summarytools::freq(joined_insolvency_data_clean$federal_state, order = "freq", report.nas = FALSE)
-view(table_2)
+print(table_2)
 
 #Table 3: Frequencies of insolvency filings per subject
 table_3 <- summarytools::freq(joined_insolvency_data_clean$subject, order = "freq", report.nas = FALSE)
-view(table_3)
+print(table_3)
 
 #Table 4: Cross-tabulation for pairs of subject and federal states 
 table_4 <- summarytools::ctable(x = joined_insolvency_data_clean$subject, y = joined_insolvency_data_clean$federal_state, prop = "r")
-view(table_4)
+View(table_4)
 
 ## Basic Bar Charts ##
 #Bar chart 1: shows the insolvency filings per subject
