@@ -43,22 +43,22 @@ table(na_insolvency_per_municipality$insolvency_court)# get those insolvency_cou
 
 prepare_join <- function(map){
   map$NAME_3[map$NAME_3 == c("Bad Kreuznach(Verbandsgemeinde)","Bad Kreuznach(Verbandsfreie Gemeinde)")] <- "Bad Kreuznach"
-  map$NAME_3[map$NAME_3 == c("Bad Homburg v.d. Höhe")] <- "Bad Homburg v.d.Höhe"
+  map$NAME_3[map$NAME_3 == c("Bad Homburg v.d. HÃ¶he")] <- "Bad Homburg v.d.HÃ¶he"
   map$NAME_3[map$NAME_3 == c("Berlin")] <- "Charlottenburg"
   map$NAME_3[map$NAME_3 == c("Esslingen am Neckar")] <- "Esslingen"
   map$NAME_3[map$NAME_3 == c("Frankfurt (Oder)")] <- "Frankfurt/Oder"
   map$NAME_3[map$NAME_3 == c("Freiburg im Breisgau")] <- "Freiburg"
-  map$NAME_3[map$NAME_3 == c("Kempten (Allgäu)")] <- "Kempten"
-  map$NAME_3[map$NAME_3 == c("Königstein im Taunus")] <- "Königstein/Ts."
+  map$NAME_3[map$NAME_3 == c("Kempten (AllgÃ¤u)")] <- "Kempten"
+  map$NAME_3[map$NAME_3 == c("KÃ¶nigstein im Taunus")] <- "KÃ¶nigstein/Ts."
   map$NAME_3[map$NAME_3 == c("Leer (Ostfriesland)")] <- "Leer"
   map$NAME_3[map$NAME_3 == c("Limburg a.d. Lahn")] <- "Limburg"
   map$NAME_3[map$NAME_3 == c("Ludwigshafen am Rhein")] <- "Ludwigshafen/Rhein"
   map$NAME_3[map$NAME_3 == c("Marburg")] <- "Marburg/Lahn"
-  map$NAME_3[map$NAME_3 == c("Mühldorf a. Inn")] <- "Mühldorf"
-  map$NAME_3[map$NAME_3 == c("Neustadt an der Weinstraße")] <- "Neustadt a. d. Wstr."
+  map$NAME_3[map$NAME_3 == c("MÃ¼hldorf a. Inn")] <- "MÃ¼hldorf"
+  map$NAME_3[map$NAME_3 == c("Neustadt an der WeinstraÃŸe")] <- "Neustadt a. d. Wstr."
   map$NAME_3[map$NAME_3 == c("Weiden i.d. OPf.")] <- "Weiden"
   map$NAME_3[map$NAME_3 == c("Weilheim i. OB")] <- "Weilheim"
-  map$NAME_3[map$NAME_3 == c("Südtondern")] <- "Niebüll"
+  map$NAME_3[map$NAME_3 == c("SÃ¼dtondern")] <- "NiebÃ¼ll"
   map$NAME_3[map$NAME_3 == c("Mitteldithmarschen")] <- "Meldorf"
   map$NAME_3[map$NAME_3 == c("Mittleres Schussental")] <- "Ravensburg"
   return(map)
@@ -182,7 +182,7 @@ joined_insolvency_data_clean %>%
 # Map: shows the insolvency filing for each insolvency_court
 # possibility to filter for specific subjects
 count_insolvency <- joined_insolvency_data_clean  %>%
-  #filter(subject == "Eröffnungen")%>%
+  #filter(subject == "ErÃ¶ffnungen")%>%
   group_by(insolvency_court)%>%
   count()
 
@@ -201,4 +201,65 @@ tmap_mode("view")
 tm_basemap("OpenStreetMap.DE")+
   tm_shape(object) +
   tm_bubbles("n", col = "red")
+
+
+#########################################################################
+#Converge the datasets (TS)
+#Data withdrawn from my depository 
+orbis_data <-  read.csv("raw_data/orbis_wrds_de.csv",
+                        header =TRUE,
+                        sep=",",
+                        encoding = "UTF-8")
+
+orbis_data <- as_tibble(orbis_data)
+
+View(insolvency_data)
+View(orbis_data)
+
+# Basic Preparation and Data Cleaning
+
+insolvency_data_ER <- insolvency_data %>%
+                      filter(subject=="ErÃ¶ffnungen")%>%
+                      distinct()
+
+# Test whether closing date in 2020 occured prior to filing date
+
+test <- orbis_data %>%
+         filter(closdate >="2020-01-01" & closdate < "2020-07-01" )
+dim(test)
+# So, there are no filings within these dates
+
+# Get newest Orbis data from 2019 and 2018
+
+orbis_data_cur <- orbis_data %>%
+               filter(year == "2019" | year =="2018")
+              
+# Join attempt with inner_join
+
+first_match <- inner_join(insolvency_data_ER, orbis_data_cur, by=c("name_debtor"="name_native"))%>%
+                select(everything())
+
+second_match <- inner_join(insolvency_data_ER,orbis_data, by=c("name_debtor"="name_internat"))
+
+# Not able to select highest year in the respective group --> help(TS)
+join_new_1 <- second_match %>%
+                    group_by("name_native") %>%
+                    filter(year==max(year))
+
+# Alternatively filtered by year:(to old data are not valuable)
+
+join_new_2 <- second_match %>%
+              group_by("name_native") %>%
+              filter(year == "2019" | year =="2018"| year =="2017"| year =="2016")
+
+View(join_new_2)
+
+
+
+
+
+
+
+
+
 
