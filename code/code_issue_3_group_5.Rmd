@@ -16,7 +16,7 @@ library(kableExtra)
 We want to explore the differences between the Orbis universe of German firms and the firms that filed for Insolvency in July and August. In order to do so, we perform three different steps. First, we limit the insolvency sample to firms who filed for insolvency. Second, we merge these firms algorithmically with the firms from the Orbis universe. Thereby, we are facing multiple issues that will be described below. Third, we define a set of informative variables to compare the insolvent firms with the others. 
 
 ### Step 1: Identifing firms that filed for insolvency in July and August
-Read the data (following Joachim Gassens https://github.com/joachim-gassen/vhb_qear20/blob/master/code/describe_insolvency_data.Rmd).
+Read the data (following Joachim Gassen https://github.com/joachim-gassen/vhb_qear20/blob/master/code/describe_insolvency_data.Rmd).
 
 ```{r readData}
 insol_raw <- read_csv(
@@ -33,7 +33,7 @@ insol_op <- insol_raw %>%
   unique()
 ```
 
-Check for missing values in insolvency data (following Joachim Gassens https://github.com/joachim-gassen/vhb_qear20/blob/master/code/describe_insolvency_data.Rmd).
+Check for missing values in insolvency data (following Joachim Gassen https://github.com/joachim-gassen/vhb_qear20/blob/master/code/describe_insolvency_data.Rmd).
 
 ```{r displayNAs}
 na_vals <- insol_op %>%
@@ -56,7 +56,7 @@ nrow(insol_op)
 
 ### Step 2: Merging insolvency data with data from orbis universe
 
-After having identified all firms that filed for insolvency, we want to merge them with the Orbis data. Therefore, we first need to load the data (following Joachim Gassens https://github.com/joachim-gassen/vhb_qear20/blob/master/code/describe_insolvency_data.Rmd).
+After having identified all firms that filed for insolvency, we want to merge them with the Orbis data. Therefore, we first need to load the data (following Joachim Gassen https://github.com/joachim-gassen/vhb_qear20/blob/master/code/describe_insolvency_data.Rmd).
 
 ```{r readsecondData}
 orbis_raw <- read_csv(
@@ -73,7 +73,7 @@ orbis_de <- orbis_raw %>%
   unique()
 ```
 
-In order to match the data with the insolvency data, we need to identify a key variable. As the insolvency data only contains the name of the filing firms, we need to rely on firm names for matching. This is not without problems because normally names are very noisy. Additionally, we should check whether every firms filed only once for insolvency (following Joachim Gassens https://github.com/joachim-gassen/vhb_qear20/blob/master/code/describe_insolvency_data.Rmd).
+In order to match the data with the insolvency data, we need to identify a key variable. As the insolvency data only contains the name of the filing firms, we need to rely on firm names for matching. This is not without problems because normally names are very noisy. Additionally, we should check whether every firms filed only once for insolvency (following Joachim Gassen https://github.com/joachim-gassen/vhb_qear20/blob/master/code/describe_insolvency_data.Rmd).
 
 ```{r NamesCourtFileNumber}
 unique_firms <- insol_op %>%
