@@ -250,4 +250,19 @@ d.summary <- d.summary.extended %>%
 ```{r}
 ```
 
+Contingency table for listing status & insolvency cases and major sector & insolvency cases, summary descriptive statistics for 2017 for two groups - insolvent and not insolvent
+```{r}
+table(merged_data$listed, merged_data$insolvency)
+sector_table <- table(merged_data$major_sector, merged_data$insolvency)
 
+ins2017summary <- merged_data %>% 
+  filter(year == "2017") %>% 
+  filter(insolvency == 1)%>% 
+  summary()
+
+
+notins2017summary <- merged_data %>% 
+  filter(year == "2017") %>% 
+  filter(insolvency == 0) %>% 
+  summary()
+```
