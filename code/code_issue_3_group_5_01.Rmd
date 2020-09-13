@@ -12,7 +12,9 @@ library(tidyverse)
 library(knitr)
 library(kableExtra)
 library(summarytools)
+library(ggplot2)
 
+library(ggpubr)
 library(psych)
 library(stargazer)
 ```
@@ -239,14 +241,34 @@ summary1 %>%
 
 #### Next we calculate t-statistics to check for significant differences between the group of solvent and insolvent firms
 ```{r}
+group_by(merged_data, insolvency) %>%
+  summarise(
+    count = n(),
+    mean = mean(lntoas, na.rm = TRUE),
+    sd = sd(lntoas, na.rm = TRUE)
+  )
 ```
-
+```{r}
+ggboxplot(merged_data, x = "insolvency", y = "lntoas", 
+          color = "insolvency", palette = c("#00AFBB", "#E7B800"),
+        ylab = "Size", xlab = "Insolvency")
+```
 
 ```{r}
+group_by(merged_data, insolvency) %>%
+  summarise(
+    count = n(),
+    mean = mean(lta, na.rm = TRUE),
+    sd = sd(lta, na.rm = TRUE)
+    )
 ```
-
+```{r}
+ggboxplot(merged_data, x = "insolvency", y = "lta", 
+          color = "insolvency", palette = c("#00AFBB", "#E7B800"),
+        ylab = "Leverage", xlab = "Insolvency")
+```
 
 ```{r}
-```
 
+```
 
