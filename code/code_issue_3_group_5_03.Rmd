@@ -153,10 +153,10 @@ matched_cases <- merged_data %>%
 nrow(matched_cases)
 ```
 
-This does not look nice. Out of 1042 insolvency cases in 2020, we could only match 203 with data from 2017. 
+This does not look nice. Out of 1042 insolvency cases in 2020, we could only match 226 with data from 2017. 
 
 ##### Merging issues
-As it is very unlikely that out of the 1042 insolvency cases, Orbis provide only data on 203 cases, we are facing two main merging issues. First, our merging strategy only addresses potential differences in names by punctuation, white spaces, and capital letter. Thereby, we are missing out on other differences like shortcuts etc. Additionally, it is possible that different firms share the same name which means that we cannot differentiate who of them filed for insolvency. The second issue is illustrated by the following table.
+As it is very unlikely that out of the 1042 insolvency cases, Orbis provide only data on 226 cases, we are facing two main merging issues. First, our merging strategy only addresses potential differences in names by punctuation, white spaces, and capital letter. Thereby, we are missing out on other differences like shortcuts etc. Additionally, it is possible that different firms share the same name which means that we cannot differentiate who of them filed for insolvency. The second issue is illustrated by the following table.
 
 ```{r showmatchedcases}
 merged_data %>%
