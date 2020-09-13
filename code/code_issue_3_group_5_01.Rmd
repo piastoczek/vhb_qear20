@@ -158,23 +158,23 @@ merged_data %>%
 
 The following tables demonstrate the observations by industry. While Other Services amount for most observations in the solvent and insolvent subsample, followed by Wholesale and construction industry, the transport and metal product industry account for over 5% of insolvent cases. Especially, Food, beverages and tobacco, as well as, Wood, cork, paper, and Gas, Water, Electricity industries show the fewest cases of insolvency in our sample. 
 ```{r Tableindustry, include=FALSE}
-sumtable1 <- merged_data %>%
+indtable1 <- merged_data %>%
   filter(insolvency == "1") %>%
   summarytools::freq(merged_data$major_sector, order = "freq")%>%
   as_tibble(rownames="rowname")
 
-sumtable2 <- merged_data %>%
+indtable2 <- merged_data %>%
   filter(insolvency == "0" & year == 2018) %>%
   summarytools::freq(merged_data$major_sector, order = "freq")%>%
   as_tibble(rownames="rowname")
 ```
 ```{r Tableindustry1}
-d.summary <- sumtable1 %>%
+indtable1 %>%
     select(industry=rowname, Freq, '% Total') %>%
     print()
 ```
 ```{r Tableindustry2}
-d.summary <- sumtable2 %>%
+indtable2 %>%
     select(industry=rowname, Freq, '% Total') %>%
     print()
 ```
@@ -207,7 +207,7 @@ merged_data$lta <- (merged_data$ncli + merged_data$culi) / merged_data$toas
 merged_data$lntoas <- log(merged_data$toas)
 ```
 
-Look at distribution of size
+Look at distribution of size 
 
 ```{r distribution lntoas}
 ggplot(merged_data, aes(x=lntoas)) +
@@ -225,14 +225,13 @@ sum( !is.na( merged_data$lntoas ) )
 Summary statistics of solvent and insolvent firms
 
 ```{r include=FALSE, summarytable}
-d.summary.extended <- merged_data %>%
+summary1 <- merged_data %>%
   select(cash, roa, lta, lntoas, empl) %>%
   psych::describe(quant=c(.25,.75)) %>%
   as_tibble(rownames="rowname")
 ```
-
 ```{r summary table short}
-d.summary <- d.summary.extended %>%
+summary1 %>%
     select(var=rowname, min, median, max, mean, sd) %>%
     print()
 ```
@@ -250,19 +249,4 @@ d.summary <- d.summary.extended %>%
 ```{r}
 ```
 
-Contingency table for listing status & insolvency cases and major sector & insolvency cases, summary descriptive statistics for 2017 for two groups - insolvent and not insolvent
-```{r}
-table(merged_data$listed, merged_data$insolvency)
-sector_table <- table(merged_data$major_sector, merged_data$insolvency)
 
-ins2017summary <- merged_data %>% 
-  filter(year == "2017") %>% 
-  filter(insolvency == 1)%>% 
-  summary()
-
-
-notins2017summary <- merged_data %>% 
-  filter(year == "2017") %>% 
-  filter(insolvency == 0) %>% 
-  summary()
-```
