@@ -221,20 +221,14 @@ sum(!is.na(merged_data$lta))
 sum(!is.na(merged_data$lntoas))
 ```
 
-Lets have a look at distribution of size.
-```{r distribution lntoas}
-ggplot(merged_data, aes(x=lntoas)) +
-    geom_histogram(colour="black", fill="white")
-```
-
 ###### Check for differences between solvent and insolvent firms
 1) Profitability: ROA
-We look at the return on asset of our sample in order to determine differences in profitability between solvent and insolvent firms. First of all we check the distribution. 
+We look at the return on asset of our sample in order to determine differences in profitability between solvent and insolvent firms. First, we check the distribution. 
 ```{r}
 ggplot(merged_data, aes(x=roa)) +
     geom_histogram(colour="black", fill="white")
 ```
-The distribution shows that there are extreme outliers. Therefore, we truncate them
+The distribution shows that there are extreme outliers. Therefore, we applying outlier treatment methods. 
 ```{r}
 merged_data$roa2 <- treat_outliers(merged_data$roa, truncate = FALSE)
 ggplot(merged_data, aes(x=roa2)) +
@@ -260,32 +254,72 @@ The test whether the differences in means a significant, we create a two-sided t
 ```{r t-test}
 t.test(merged_data$roa2 ~ merged_data$insolvency)
 ```
-2) Loss year: LOSS
 
-3) Leverage: LTA
+2) Loss year: LOSS
+We look at the losses in the year. First, we check again the distribution. 
+```{r}
+ggplot(merged_data, aes(x=loss)) +
+    geom_histogram(colour="black", fill="white")
+```
+The distribution shows that there are more firms who made a gain in overall. But how does this differ among solvent and insolvent firms?
 ```{r}
 group_by(merged_data, insolvency) %>%
   summarise(
     count = n(),
-    mean = mean(lta, na.rm = TRUE),
-    sd = sd(lta, na.rm = TRUE)
-    )
+    mean = mean(loss, na.rm = TRUE),
+    sd = sd(loss, na.rm = TRUE)
+  )
 ```
-
-
-We notice outliers in the solvent sample. We zoom the boxplot to values between 0 and 3 to gain a better understanding of the leverage ratio of our sample.
+To get a visual expression for those differences in the mean, we create a boxplot. 
 ```{r}
-ggboxplot(merged_data, x = "insolvency", y = "lta", 
+ggboxplot(merged_data, x = "insolvency", y = "loss", 
           color = "insolvency", palette = c("#00AFBB", "#E7B800"),
-        ylab = "Leverage", xlab = "Insolvency")+
-  coord_cartesian(ylim = c(0, 3))
+        ylab = "Return on assets", xlab = "Insolvency")+
+  coord_cartesian(ylim = c(0, 1))
 ```
-
+The test whether the differences in means a significant, we create a two-sided t-test. 
 ```{r t-test}
-t.test(merged_data$lta~merged_data$insolvency)
+t.test(merged_data$loss ~ merged_data$insolvency)
 ```
 
+3) Leverage: LTA
+We first check the distribution
+```{r}
+ggplot(merged_data, aes(x=lta)) +
+    geom_histogram(colour="black", fill="white")
+```
+We need to deal again with extreme outliers.
+```{r}
+merged_data$lta2 <- treat_outliers(merged_data$lta, truncate = FALSE)
+ggplot(merged_data, aes(x=lta2)) +
+    geom_histogram(colour="black", fill="white")
+```
+Then, we look at the summary statistics for the treated variable
+```{r}
+group_by(merged_data, insolvency) %>%
+  summarise(
+    count = n(),
+    mean = mean(lta2, na.rm = TRUE),
+    sd = sd(lta2, na.rm = TRUE)
+  )
+```
+To get a visual expression for those differences in the mean, we create a boxplot. 
+```{r}
+ggboxplot(merged_data, x = "insolvency", y = "lta2", 
+          color = "insolvency", palette = c("#00AFBB", "#E7B800"),
+        ylab = "Return on assets", xlab = "Insolvency")
+```
+The test whether the differences in means a significant, we create a two-sided t-test. 
+```{r t-test}
+t.test(merged_data$roa2 ~ merged_data$insolvency)
+```
 4) Size: LNTOAS
+Lets have a look at distribution of size.
+```{r distribution lntoas}
+ggplot(merged_data, aes(x=lntoas)) +
+    geom_histogram(colour="black", fill="white")
+```
+This looks nice. So lets get a summary statistic.
 ```{r}
 merged_data %>%
   group_by(insolvency) %>%
@@ -295,18 +329,16 @@ merged_data %>%
     sd = sd(lntoas, na.rm = TRUE)
   )
 ```
+As both means are very similar, lets check the boxplot. 
 ```{r}
 ggboxplot(merged_data, x = "insolvency", y = "lntoas", 
           color = "insolvency", palette = c("#00AFBB", "#E7B800"),
         ylab = "Size", xlab = "Insolvency")+
   coord_cartesian(ylim = c(0, 20))
 ```
-
-
+And now we perform a ttest
 ```{r t-test}
 t.test(merged_data$lntoas~merged_data$insolvency)
 ```
-
-
 
 
