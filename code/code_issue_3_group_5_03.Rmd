@@ -115,7 +115,7 @@ orbis$key <- tolower(orbis$key)
 ```
 
 After creating the keys, we can merge both datasets with a left join. Additionally, we are creating a dummy variable "insolvency" which is 1 in the case of insolvency filing and 0 otherwise.
-```{r mergeData}
+```{r merge Data}
 merged_data <- left_join(orbis, insolvency, by = "key")
 
 merged_data$insolvency <- ifelse(merged_data$subject == "Eröffnungen", 1, 0)
@@ -123,14 +123,14 @@ merged_data$insolvency[is.na(merged_data$insolvency)] <- 0
 ```
 
 We select data from 2017 due to data availability criteria. In orbis we only have few information available for years 2018 and 2019 (see table below). We decide on one year to have a comparable data base. We note that firms that file for insolvency in 2020 might not differ that strongly in 2017 than they might in the following years.
-```{r}
+```{r tableyear}
 merged_data %>%
   group_by(year) %>%
   count()
 ```
 
 
-```{r}
+```{r filter2017}
 merged_data  <- merged_data  %>%
   filter(year == "2017")
 ```
@@ -174,15 +174,15 @@ merged_data %>%
 
 The following tables demonstrate the observations by industry by solvent and insolvent firms. While "Other Services" amount for most observations in the solvent and insolvent subsample, followed by "Wholesale and construction industry", the "transport and metal product industry" account for over 5% of insolvent cases. Especially, "Food, beverages and tobacco", as well as, "Wood, cork, paper", and "Gas, Water, Electricity industries" show the fewest cases of insolvency in our sample. 
 
-```{r Table by industry}
+```{r TablebyIndustry}
 print(ctable(x=merged_data$major_sector, y = merged_data$insolvency, prop ="c"), method = "render")
 ```
 Having a look at the listing status of firms, we see that most insolvent firms are unlisted in 2017. 
-```{r Table by industry}
+```{r TablebyListing}
 print(ctable(x=merged_data$listed, y = merged_data$insolvency, prop ="c"), method = "render")
 ```
 Additionally, insolvent firms apply predominantly local GAAP as accounting rule. 
-```{r Table by industry}
+```{r TablebyAccRule}
 print(ctable(x=merged_data$accpractice, y = merged_data$insolvency, prop ="c"), method = "render")
 ```
 
@@ -195,26 +195,26 @@ print(ctable(x=merged_data$accpractice, y = merged_data$insolvency, prop ="c"), 
 
 ###### Calculations
 1) Profitability: Calculated by ROA
-```{r Calculate ROA}
+```{r CalculateROA}
 merged_data$roa <- merged_data$pl / merged_data$toas
 ```
 
 2) Loss year: Equals 1 when ROA is negative in 2017 and 0 otherwise
-```{r calculate Loss year dummy}
+```{r calculateLossyeardummy}
 merged_data$loss <- ifelse(merged_data$roa < 0, 1, 0)
 ```
 
 3) Leverage: Calculated by total liabilities / total assets
-```{r calculate leverage as lta}
+```{r calculateLeverage}
 merged_data$lta <- (merged_data$ncli + merged_data$culi) / merged_data$toas
 ```
 
 4) Size: Calculated as ln of total assets
-```{r Calculate size}
+```{r CalculateSize}
 merged_data$lntoas <- log(merged_data$toas)
 ```
 Quick check how many non-missing values we have for the different determinants.
-```{r}
+```{r checknonNAs}
 sum(!is.na(merged_data$roa))
 sum(!is.na(merged_data$loss))
 sum(!is.na(merged_data$lta))
@@ -251,7 +251,7 @@ ggboxplot(merged_data, x = "insolvency", y = "roa2",
   coord_cartesian(ylim = c(-0.5, 0.5))
 ```
 The test whether the differences in means a significant, we create a two-sided t-test. 
-```{r t-test}
+```{r}
 t.test(merged_data$roa2 ~ merged_data$insolvency)
 ```
 
@@ -278,7 +278,7 @@ ggboxplot(merged_data, x = "insolvency", y = "loss",
   coord_cartesian(ylim = c(0, 1))
 ```
 The test whether the differences in means a significant, we create a two-sided t-test. 
-```{r t-test}
+```{r}
 t.test(merged_data$loss ~ merged_data$insolvency)
 ```
 
@@ -310,7 +310,7 @@ ggboxplot(merged_data, x = "insolvency", y = "lta2",
         ylab = "Return on assets", xlab = "Insolvency")
 ```
 The test whether the differences in means a significant, we create a two-sided t-test. 
-```{r t-test}
+```{r}
 t.test(merged_data$roa2 ~ merged_data$insolvency)
 ```
 4) Size: LNTOAS
@@ -337,7 +337,7 @@ ggboxplot(merged_data, x = "insolvency", y = "lntoas",
   coord_cartesian(ylim = c(0, 20))
 ```
 And now we perform a ttest
-```{r t-test}
+```{r}
 t.test(merged_data$lntoas~merged_data$insolvency)
 ```
 
